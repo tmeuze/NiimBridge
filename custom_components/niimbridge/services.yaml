@@ -1,0 +1,32 @@
+print_label:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: niimbridge
+    name:
+      required: true
+      example: "Anker USB-C Charger"
+      selector:
+        text:
+    asset_id:
+      example: "000-042"
+      selector:
+        text:
+    location:
+      example: "Office"
+      selector:
+        text:
+    url:
+      example: "https://homebox.example/item/abc"
+      selector:
+        text:
+    copies:
+      selector:
+        number:
+          min: 1
+          max: 50
+    preview_only:
+      default: false
+      selector:
+        boolean:

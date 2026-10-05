@@ -1,0 +1,84 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "NiimBridge",
+        "description": "Choose the Niimbot printer and label settings. Sizes are landscape; use rotation to match how your printer feeds labels (D110 usually needs 90).",
+        "data": {
+          "device_id": "Niimbot printer",
+          "label_size": "Label size",
+          "width": "Custom width (px)",
+          "height": "Custom height (px)",
+          "rotate": "Rotation",
+          "density": "Print density",
+          "label_type": "Label type",
+          "copies": "Copies",
+          "font": "Font file (optional)",
+          "font_size": "Font size (0 = auto-fit)",
+          "mqtt_png_topic": "MQTT topic for PNG labels (optional)",
+          "mqtt_json_topic": "MQTT topic for JSON labels (optional)"
+        }
+      },
+      "webhook": {
+        "title": "HomeBox webhook",
+        "description": "Set this in HomeBox so it posts each label here:\n\n`{command}`\n\nYou can also POST JSON (`name`, `asset_id`, `location`, `url`) to the webhook URL:\n\n`{webhook_url}`"
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "NiimBridge options",
+        "data": {
+          "label_size": "Label size",
+          "width": "Custom width (px)",
+          "height": "Custom height (px)",
+          "rotate": "Rotation",
+          "density": "Print density",
+          "label_type": "Label type",
+          "copies": "Copies",
+          "font": "Font file (optional)",
+          "font_size": "Font size (0 = auto-fit)",
+          "mqtt_png_topic": "MQTT topic for PNG labels (optional)",
+          "mqtt_json_topic": "MQTT topic for JSON labels (optional)"
+        }
+      }
+    }
+  },
+  "services": {
+    "print_label": {
+      "name": "Print label",
+      "description": "Render the standard item label and print it on the Niimbot printer.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Bridge",
+          "description": "Required only with more than one bridge."
+        },
+        "name": {
+          "name": "Name",
+          "description": "Item name."
+        },
+        "asset_id": {
+          "name": "Asset ID",
+          "description": "Shown under the name."
+        },
+        "location": {
+          "name": "Location",
+          "description": "Shown under the name."
+        },
+        "url": {
+          "name": "URL",
+          "description": "Encoded in the QR code (falls back to asset ID, then name)."
+        },
+        "copies": {
+          "name": "Copies",
+          "description": "Overrides the configured copies."
+        },
+        "preview_only": {
+          "name": "Preview only",
+          "description": "Render the preview image without printing."
+        }
+      }
+    }
+  }
+}
