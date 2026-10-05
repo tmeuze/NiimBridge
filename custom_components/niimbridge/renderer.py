@@ -18,6 +18,7 @@ class LabelSpec:
     height: int
     font_path: str | None = None
     font_size: int = 0  # 0 = auto-fit
+    qr_percent: int = 90
 
 
 def _font(spec: LabelSpec, size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
@@ -91,11 +92,12 @@ def render_item_label(
     pad = max(4, spec.height // 12)
 
     qr_data = url or asset_id or name
-    qr_size = spec.height - 2 * pad
+    qr_size = max(16, spec.height * min(100, max(30, spec.qr_percent)) // 100)
     qr = _qr_image(qr_data, qr_size)
-    img.paste(qr, (pad, (spec.height - qr.height) // 2))
+    qr_x = pad if qr_size <= spec.height - 2 * pad else (spec.height - qr.height) // 2
+    img.paste(qr, (qr_x, (spec.height - qr.height) // 2))
 
-    text_x = pad * 2 + qr.width
+    text_x = qr_x + qr.width + pad
     box_w = spec.width - text_x - pad
     box_h = spec.height - 2 * pad
 

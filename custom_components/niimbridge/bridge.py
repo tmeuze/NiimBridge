@@ -25,6 +25,7 @@ from .const import (
     CONF_LABEL_TYPE,
     CONF_MQTT_JSON_TOPIC,
     CONF_MQTT_PNG_TOPIC,
+    CONF_QR_PERCENT,
     CONF_ROTATE,
     CONF_WEBHOOK_ID,
     CONF_WIDTH,
@@ -34,6 +35,7 @@ from .const import (
     DEFAULT_FONT_SIZE,
     DEFAULT_LABEL_SIZE,
     DEFAULT_LABEL_TYPE,
+    DEFAULT_QR_PERCENT,
     DEFAULT_ROTATE,
     DOMAIN,
     LABEL_SIZE_PRESETS,
@@ -69,7 +71,11 @@ class NiimBridge:
         font = s.get(CONF_FONT) or None
         font_path = self._resolve_font(font) if font else None
         return LabelSpec(
-            width, height, font_path, int(s.get(CONF_FONT_SIZE, DEFAULT_FONT_SIZE))
+            width,
+            height,
+            font_path,
+            int(s.get(CONF_FONT_SIZE, DEFAULT_FONT_SIZE)),
+            int(s.get(CONF_QR_PERCENT, DEFAULT_QR_PERCENT)),
         )
 
     def _resolve_font(self, name: str) -> str | None:

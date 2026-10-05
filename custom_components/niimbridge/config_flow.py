@@ -21,6 +21,7 @@ from .const import (
     CONF_LABEL_TYPE,
     CONF_MQTT_JSON_TOPIC,
     CONF_MQTT_PNG_TOPIC,
+    CONF_QR_PERCENT,
     CONF_ROTATE,
     CONF_WEBHOOK_ID,
     CONF_WIDTH,
@@ -30,6 +31,7 @@ from .const import (
     DEFAULT_FONT_SIZE,
     DEFAULT_LABEL_SIZE,
     DEFAULT_LABEL_TYPE,
+    DEFAULT_QR_PERCENT,
     DEFAULT_ROTATE,
     DOMAIN,
     LABEL_SIZE_PRESETS,
@@ -91,6 +93,9 @@ def _label_schema(defaults: dict[str, Any], *, with_device: bool) -> vol.Schema:
             vol.Required(CONF_FONT_SIZE, default=d(CONF_FONT_SIZE, DEFAULT_FONT_SIZE)): selector.NumberSelector(
                 selector.NumberSelectorConfig(min=0, max=200, mode=selector.NumberSelectorMode.BOX)
             ),
+            vol.Required(CONF_QR_PERCENT, default=d(CONF_QR_PERCENT, DEFAULT_QR_PERCENT)): selector.NumberSelector(
+                selector.NumberSelectorConfig(min=30, max=100, unit_of_measurement="%", mode=selector.NumberSelectorMode.BOX)
+            ),
             opt(CONF_MQTT_PNG_TOPIC, ""): selector.TextSelector(),
             opt(CONF_MQTT_JSON_TOPIC, ""): selector.TextSelector(),
         }
@@ -109,7 +114,7 @@ def _webhook_placeholders(hass: Any, webhook_id: str) -> dict[str, str]:
 
 def _normalize(user_input: dict[str, Any]) -> dict[str, Any]:
     out = dict(user_input)
-    for key in (CONF_ROTATE, CONF_LABEL_TYPE, CONF_DENSITY, CONF_COPIES, CONF_FONT_SIZE, CONF_WIDTH, CONF_HEIGHT):
+    for key in (CONF_ROTATE, CONF_LABEL_TYPE, CONF_DENSITY, CONF_COPIES, CONF_FONT_SIZE, CONF_QR_PERCENT, CONF_WIDTH, CONF_HEIGHT):
         if key in out:
             out[key] = int(out[key])
     return out

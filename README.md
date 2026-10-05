@@ -65,9 +65,12 @@ The label PNG HomeBox generates is posted as `image/png`, scaled and centred to 
 | Label size | Presets are landscape pixels at 203 DPI (30×15, 40×12, 40×30, 50×15, 50×30, 50×80 mm), or custom pixels |
 | Rotation | Applied by niimbot when printing. D110-style tape printers typically need 90 |
 | Density, label type, copies | Passed through to `niimbot.print` |
+| QR code size | Percent of label height for the standard layout (30–100, default 90) |
 | Font, font size | Optional font file (looked up in `/config/www/fonts`); size 0 auto-fits |
 
-The standard layout is a QR code on the left (URL, else asset ID, else name) with the item name, asset ID and location on the right. The **Label preview** image entity shows the last rendered label.
+The standard layout is a QR code on the left (URL, else asset ID, else name) with the item name, asset ID and location on the right. If you send HomeBox's own PNG instead of JSON, the QR size comes from HomeBox. Set HomeBox's label width and height to the same aspect ratio as your label so the image isn't shrunk to fit.
+
+The **Label preview** image entity shows the last rendered label.
 
 ## License
 

@@ -16,7 +16,8 @@
           "font": "Font file (optional)",
           "font_size": "Font size (0 = auto-fit)",
           "mqtt_png_topic": "MQTT topic for PNG labels (optional)",
-          "mqtt_json_topic": "MQTT topic for JSON labels (optional)"
+          "mqtt_json_topic": "MQTT topic for JSON labels (optional)",
+          "qr_percent": "QR code size (% of label height)"
         }
       },
       "webhook": {
@@ -40,7 +41,8 @@
           "font": "Font file (optional)",
           "font_size": "Font size (0 = auto-fit)",
           "mqtt_png_topic": "MQTT topic for PNG labels (optional)",
-          "mqtt_json_topic": "MQTT topic for JSON labels (optional)"
+          "mqtt_json_topic": "MQTT topic for JSON labels (optional)",
+          "qr_percent": "QR code size (% of label height)"
         },
         "description": "Your HomeBox webhook command:\n\n`{command}`"
       }

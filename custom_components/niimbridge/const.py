@@ -15,6 +15,7 @@ CONF_LABEL_TYPE = "label_type"
 CONF_COPIES = "copies"
 CONF_FONT = "font"
 CONF_FONT_SIZE = "font_size"
+CONF_QR_PERCENT = "qr_percent"
 CONF_MQTT_PNG_TOPIC = "mqtt_png_topic"
 CONF_MQTT_JSON_TOPIC = "mqtt_json_topic"
 
@@ -37,6 +38,7 @@ DEFAULT_DENSITY = 3
 DEFAULT_LABEL_TYPE = 1
 DEFAULT_COPIES = 1
 DEFAULT_FONT_SIZE = 0  # 0 = auto-fit
+DEFAULT_QR_PERCENT = 90  # QR height as a percentage of label height
 
 MAX_UPLOAD_BYTES = 2_000_000
 SIGNAL_LABEL_UPDATED = f"{DOMAIN}_label_updated"
