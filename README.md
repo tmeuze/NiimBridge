@@ -28,7 +28,7 @@ You don't register a webhook yourself. NiimBridge creates one with a random, sec
 
    ```yaml
    environment:
-     - HBOX_LABEL_MAKER_PRINT_COMMAND=curl -fsS -F file=@{{.FileName}} http://homeassistant.local:8123/api/webhook/<random-id>
+     - HBOX_LABEL_MAKER_PRINT_COMMAND=wget -q -O /dev/null --header=Content-Type:image/png --post-file={{.FileName}} http://homeassistant.local:8123/api/webhook/<random-id>
    ```
 
    Your label size in HomeBox (`HBOX_LABEL_MAKER_WIDTH` / `HEIGHT`) can stay as is; NiimBridge rescales to the label size you picked.
@@ -36,7 +36,7 @@ You don't register a webhook yourself. NiimBridge creates one with a random, sec
 
 Notes:
 
-- The container running HomeBox must be able to reach Home Assistant at that URL and must have `curl` installed. If the URL NiimBridge shows isn't reachable from HomeBox, substitute an address that is (for example the HA server's LAN IP).
+- The container running HomeBox must be able to reach Home Assistant at that URL. The regular HomeBox image includes `wget` (the hardened image has no tools, so use the regular one). HomeBox runs the command directly, not through a shell, so keep each option free of spaces. If the URL NiimBridge shows isn't reachable from HomeBox, substitute an address that is (for example the HA server's LAN IP).
 - Webhook URLs need no login, so the random ID is the secret. Don't share it. To get a new one, remove and re-add the integration.
 - To test without HomeBox: `curl -F file=@label.png http://<ha>/api/webhook/<random-id>`
 
@@ -45,16 +45,16 @@ Notes:
 **Webhook (primary).** In HomeBox set:
 
 ```
-HBOX_LABEL_MAKER_PRINT_COMMAND=curl -fsS -F file=@{{.FileName}} http://<ha>/api/webhook/<id>
+HBOX_LABEL_MAKER_PRINT_COMMAND=wget -q -O /dev/null --header=Content-Type:image/png --post-file={{.FileName}} http://<ha>/api/webhook/<id>
 ```
 
-The label PNG HomeBox generates is scaled and centred to your label size and printed. The webhook also accepts a raw `image/png` body, or JSON for the standard layout:
+The label PNG HomeBox generates is posted as `image/png`, scaled and centred to your label size and printed. The webhook also accepts a raw `image/png` body, or JSON for the standard layout:
 
 ```json
 {"name": "Anker USB-C Charger", "asset_id": "000-042", "location": "Office", "url": "https://homebox.example/item/abc", "copies": 1}
 ```
 
-**MQTT (optional).** Set a PNG topic and/or a JSON topic in the options. PNG topics take the same image HomeBox would send; JSON topics take the same JSON as above.
+**MQTT (optional).** The regular HomeBox image also ships `mosquitto_pub`, so you can use `HBOX_LABEL_MAKER_PRINT_COMMAND=mosquitto_pub -h <broker> -u <user> -P <password> -t homebox/labels -f {{.FileName}}` with the PNG topic set to `homebox/labels`. Set a PNG topic and/or a JSON topic in the options. PNG topics take the same image HomeBox would send; JSON topics take the same JSON as above.
 
 **Service.** `niimbridge.print_label` prints the standard layout from an automation, with `preview_only` to render without printing.
 
