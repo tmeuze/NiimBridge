@@ -136,6 +136,9 @@ class NiimBridge:
         if (request.content_length or 0) > MAX_UPLOAD_BYTES:
             return web.Response(status=413, text="Payload too large")
         ctype = request.content_type or ""
+        _LOGGER.debug(
+            "Label request received: type=%s length=%s", ctype, request.content_length
+        )
         try:
             if ctype.startswith("multipart/") or ctype == "application/x-www-form-urlencoded":
                 form = await request.post()
@@ -154,6 +157,7 @@ class NiimBridge:
         except (ValueError, OSError) as err:
             _LOGGER.warning("Rejected label request: %s", err)
             return web.Response(status=400, text="Invalid label data")
+        _LOGGER.debug("Label request queued for printing")
         return web.Response(status=202, text="Queued")
 
     # -- printing ------------------------------------------------------------
