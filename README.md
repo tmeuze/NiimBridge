@@ -28,7 +28,7 @@ You don't register a webhook yourself. NiimBridge creates one with a random, sec
 
    ```yaml
    environment:
-     - HBOX_LABEL_MAKER_PRINT_COMMAND=wget -q -O /dev/null --header=Content-Type:image/png --post-file={{.FileName}} http://homeassistant.local:8123/api/webhook/<random-id>
+     - HBOX_LABEL_MAKER_PRINT_COMMAND=wget -q -O /dev/null --tries=1 --timeout=10 --header=Content-Type:image/png --post-file={{.FileName}} http://homeassistant.local:8123/api/webhook/<random-id>
    ```
 
    Your label size in HomeBox (`HBOX_LABEL_MAKER_WIDTH` / `HEIGHT`) can stay as is; NiimBridge rescales to the label size you picked.
@@ -45,7 +45,7 @@ Notes:
 **Webhook (primary).** In HomeBox set:
 
 ```
-HBOX_LABEL_MAKER_PRINT_COMMAND=wget -q -O /dev/null --header=Content-Type:image/png --post-file={{.FileName}} http://<ha>/api/webhook/<id>
+HBOX_LABEL_MAKER_PRINT_COMMAND=wget -q -O /dev/null --tries=1 --timeout=10 --header=Content-Type:image/png --post-file={{.FileName}} http://<ha>/api/webhook/<id>
 ```
 
 The label PNG HomeBox generates is posted as `image/png`, scaled and centred to your label size and printed. The webhook also accepts a raw `image/png` body, or JSON for the standard layout:

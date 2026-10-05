@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import base64
 import json
 import logging
@@ -55,6 +56,7 @@ class NiimBridge:
         self.entry = entry
         self.last_png: bytes | None = None
         self._unsubs: list[Any] = []
+        self._print_lock = asyncio.Lock()
 
     @property
     def settings(self) -> dict[str, Any]:
@@ -153,11 +155,14 @@ class NiimBridge:
                 )
                 if png is None:
                     return web.Response(status=400, text="No file field in form")
-                await self.async_print_png(png)
+                self._queue(self.async_print_png(png))
             elif ctype.startswith("image/") or ctype == "application/octet-stream":
-                await self.async_print_png(await request.read())
+                self._queue(self.async_print_png(await request.read()))
             elif ctype == "application/json":
-                await self.async_print_item(await request.json())
+                data = await request.json()
+                if not isinstance(data, dict) or not data.get("name"):
+                    raise ValueError("JSON label needs at least a 'name'")
+                self._queue(self.async_print_item(data))
             else:
                 return web.Response(status=415, text="Unsupported content type")
         except (ValueError, OSError) as err:
@@ -167,6 +172,22 @@ class NiimBridge:
         return web.Response(status=202, text="Queued")
 
     # -- printing ------------------------------------------------------------
+
+    def _queue(self, coro: Any) -> None:
+        """Run a print job in the background so the HTTP reply is immediate.
+
+        Replying only after the Bluetooth print finishes can exceed the
+        sender's timeout, which makes clients such as wget retry and print
+        the same label repeatedly.
+        """
+
+        async def _run() -> None:
+            try:
+                await coro
+            except Exception:  # noqa: BLE001
+                _LOGGER.exception("Label print failed")
+
+        self.entry.async_create_background_task(self.hass, _run(), "niimbridge_print")
 
     async def async_print_png(self, png: bytes, *, preview_only: bool = False) -> None:
         spec = self.spec
@@ -200,6 +221,10 @@ class NiimBridge:
         self._store_preview(png)
         if preview_only:
             return
+        async with self._print_lock:
+            await self._async_call_niimbot(png, copies)
+
+    async def _async_call_niimbot(self, png: bytes, copies: int | None) -> None:
         s = self.settings
         spec = self.spec
         image_uri = "data:image/png;base64," + base64.b64encode(png).decode()
