@@ -98,6 +98,14 @@ def _label_schema(defaults: dict[str, Any], *, with_device: bool) -> vol.Schema:
     return vol.Schema(fields)
 
 
+def _webhook_placeholders(hass: Any, webhook_id: str) -> dict[str, str]:
+    url = webhook.async_generate_url(hass, webhook_id)
+    return {
+        "webhook_url": url,
+        "command": "HBOX_LABEL_MAKER_PRINT_COMMAND=curl -fsS -F file=@{{.FileName}} " + url,
+    }
+
+
 def _normalize(user_input: dict[str, Any]) -> dict[str, Any]:
     out = dict(user_input)
     for key in (CONF_ROTATE, CONF_LABEL_TYPE, CONF_DENSITY, CONF_COPIES, CONF_FONT_SIZE, CONF_WIDTH, CONF_HEIGHT):
@@ -123,16 +131,11 @@ class NiimBridgeConfigFlow(ConfigFlow, domain=DOMAIN):
     async def async_step_webhook(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         if user_input is not None:
             return self.async_create_entry(title="NiimBridge", data=self._data)
-        url = webhook.async_generate_url(self.hass, self._data[CONF_WEBHOOK_ID])
         return self.async_show_form(
             step_id="webhook",
-            description_placeholders={
-                "webhook_url": url,
-                "command": (
-                    "HBOX_LABEL_MAKER_PRINT_COMMAND=curl -fsS -F file=@{{.FileName}} "
-                    + url
-                ),
-            },
+            description_placeholders=_webhook_placeholders(
+                self.hass, self._data[CONF_WEBHOOK_ID]
+            ),
         )
 
     @staticmethod
@@ -147,5 +150,9 @@ class NiimBridgeOptionsFlow(OptionsFlow):
             return self.async_create_entry(data=_normalize(user_input))
         current = {**self.config_entry.data, **self.config_entry.options}
         return self.async_show_form(
-            step_id="init", data_schema=_label_schema(current, with_device=False)
+            step_id="init",
+            data_schema=_label_schema(current, with_device=False),
+            description_placeholders=_webhook_placeholders(
+                self.hass, self.config_entry.data[CONF_WEBHOOK_ID]
+            ),
         )

@@ -19,6 +19,27 @@ HomeBox renders a label, NiimBridge receives it, sizes it for your label stock, 
 3. Settings → Devices & services → Add integration → **NiimBridge**.
 4. Pick your Niimbot printer and label settings. The last step shows your webhook URL and the exact HomeBox setting to use.
 
+## Setting up the webhook
+
+You don't register a webhook yourself. NiimBridge creates one with a random, secret ID when you add the integration.
+
+1. **Get the URL.** The final step of setup shows it, along with the full HomeBox command. To see it again later: Settings → Devices & services → NiimBridge → **Configure**. It looks like `http://homeassistant.local:8123/api/webhook/<random-id>`.
+2. **Tell HomeBox to use it.** Set this environment variable on your HomeBox container and restart it (shown here as Docker Compose):
+
+   ```yaml
+   environment:
+     - HBOX_LABEL_MAKER_PRINT_COMMAND=curl -fsS -F file=@{{.FileName}} http://homeassistant.local:8123/api/webhook/<random-id>
+   ```
+
+   Your label size in HomeBox (`HBOX_LABEL_MAKER_WIDTH` / `HEIGHT`) can stay as is; NiimBridge rescales to the label size you picked.
+3. **Print.** Use **Print on Server** in HomeBox. The label should print, and the Label preview entity updates.
+
+Notes:
+
+- The container running HomeBox must be able to reach Home Assistant at that URL and must have `curl` installed. If the URL NiimBridge shows isn't reachable from HomeBox, substitute an address that is (for example the HA server's LAN IP).
+- Webhook URLs need no login, so the random ID is the secret. Don't share it. To get a new one, remove and re-add the integration.
+- To test without HomeBox: `curl -F file=@label.png http://<ha>/api/webhook/<random-id>`
+
 ## Inputs
 
 **Webhook (primary).** In HomeBox set:
