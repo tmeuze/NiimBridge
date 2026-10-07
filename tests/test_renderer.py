@@ -1,6 +1,7 @@
 """Renderer tests (no Home Assistant needed)."""
 
 import importlib.util
+import sys
 from io import BytesIO
 from pathlib import Path
 
@@ -11,6 +12,7 @@ _spec = importlib.util.spec_from_file_location(
     Path(__file__).parent.parent / "custom_components" / "niimbridge" / "renderer.py",
 )
 renderer = importlib.util.module_from_spec(_spec)
+sys.modules["renderer"] = renderer
 _spec.loader.exec_module(renderer)
 
 
