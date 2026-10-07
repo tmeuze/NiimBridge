@@ -1,0 +1,22 @@
+name: Bug report
+description: Something is not working
+body:
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: NiimBridge, Home Assistant, hass-niimbot and HomeBox versions, and your printer model.
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Home Assistant log lines with `custom_components.niimbridge: debug` enabled. Remove your webhook ID first.
+      render: text

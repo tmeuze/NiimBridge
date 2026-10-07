@@ -1,14 +1,24 @@
 {
   "domain": "niimbridge",
   "name": "NiimBridge",
-  "version": "0.1.0",
-  "codeowners": ["@tmeuze"],
+  "after_dependencies": [
+    "mqtt",
+    "niimbot"
+  ],
+  "codeowners": [
+    "@tmeuze"
+  ],
   "config_flow": true,
-  "dependencies": ["webhook", "http"],
-  "after_dependencies": ["mqtt", "niimbot"],
+  "dependencies": [
+    "webhook",
+    "http"
+  ],
   "documentation": "https://github.com/tmeuze/NiimBridge#readme",
-  "issue_tracker": "https://github.com/tmeuze/NiimBridge/issues",
   "integration_type": "service",
   "iot_class": "local_push",
-  "requirements": ["segno>=1.6.0"]
+  "issue_tracker": "https://github.com/tmeuze/NiimBridge/issues",
+  "requirements": [
+    "segno>=1.6.0"
+  ],
+  "version": "0.1.0"
 }
