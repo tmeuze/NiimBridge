@@ -14,7 +14,7 @@ HomeBox renders a label, NiimBridge receives it, sizes it for your label stock, 
 
 ## Install
 
-1. HACS → three-dot menu → Custom repositories → add `https://github.com/tmeuze/NiimBridge` as **Integration**.
+1. HACS → three-dot menu → Custom repositories → add `https://github.com/tmeuze/ha-niimbridge` as **Integration**.
 2. Download NiimBridge and restart Home Assistant.
 3. Settings → Devices & services → Add integration → **NiimBridge**.
 4. Pick your Niimbot printer and label settings. The last step shows your webhook URL and the exact HomeBox setting to use.
